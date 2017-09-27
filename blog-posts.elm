@@ -1,7 +1,6 @@
 import Html exposing (Html, ul, li, text, div, button)
 import List exposing (map)
 import Html.Events exposing (onClick)
-import Date exposing (..)
 
 main =
   Html.beginnerProgram { model = model, view = view, update = update }
@@ -20,10 +19,19 @@ type Msg = SortAsc | SortDesc
 update : Msg -> Model -> Model
 update msg model = case msg of
     SortAsc -> List.sortBy .name model
-    SortDesc -> List.reverse model
+    SortDesc -> List.sortWith descending model
+
+descending : Post -> Post -> Order
+descending a b =
+    case compare a.name b.name of
+        LT ->
+            GT
+        GT ->
+            LT
+        EQ ->
+            EQ
 
 -- VIEW
-
 postName : Post ->  (Html.Html msg)
 postName post = li [] [text post.name, postTagList post]
 
