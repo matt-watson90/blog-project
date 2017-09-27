@@ -1,17 +1,17 @@
 import Html exposing (Html, ul, li, text, div, button)
 import List exposing (map)
 import Html.Events exposing (onClick)
+import Date exposing (..)
 
 main =
   Html.beginnerProgram { model = model, view = view, update = update }
 
-
 -- MODEL
-type alias Post = {name: String}
+type alias Post = {name: String, tags: List String}
 type alias Model = List Post
 
 model : Model
-model = [Post "Post 1", Post "Post 2"]
+model = [Post "Post 1" ["initial post, test"], Post "Post 2" ["test"]]
 
 -- UPDATE
 
@@ -24,13 +24,16 @@ update msg model = case msg of
 
 -- VIEW
 
-listItem : Post ->  (Html.Html msg)
-listItem post = li [] [text post.name]
+postName : Post ->  (Html.Html msg)
+postName post = li [] [text post.name, postTagList post]
+
+postTagList : Post -> (Html.Html msg)
+postTagList post = ul [] [(li [] (map (\p -> text p) post.tags))]
 
 view : Model -> Html Msg
 view model = div [] 
     [
-        ul [] (map listItem model)
+        ul [] (map postName model)
         , button [onClick SortAsc] [text "Acs"]
         , button [onClick SortDesc] [text "Desc"]
     ]
